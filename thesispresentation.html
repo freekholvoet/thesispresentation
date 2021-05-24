@@ -48,35 +48,25 @@ name: introduction
 
 ### Pure risk premium calculation
 
+- Technical premiums defined by the expected loss
+
+- In P&amp;C often the frequency-severity approach is used
 
 
 $$
-\pi = \mathbb{E}\left(\frac{N}{e}\right) \times \mathbb{E}\left(\frac{L}{N}\; \middle|\; N&gt;0\right) = \mathbb{E}(F)\times\mathbb{E}(S)
+\pi = \mathbb{E}\left(\frac{L}{e}\right) \stackrel{\tiny\text{indep.}}{=} \mathbb{E}\left(\frac{N}{e}\right) \times \mathbb{E}\left(\frac{L}{N}\; \middle|\; N&gt;0\right) = \mathbb{E}(F)\times\mathbb{E}(S)
 $$
 
----
 
-# Different model types
+### Predictive models
 
-.pull-left[
-### Binned GLM model
+Many options exist: GLM, GAM, decision trees, ensemble methods, Tweedie compound Poisson-gamma models, neural networks, support vector machines,...
 
-- GLMs are widely used in practice and are easily interpretable
 
-- Extended by [Henckaerts et al. (2018)](#references) into a binned GLM, using GAMs together with tree-based clustering, to bin continuous variables
+- Binned GLM:  [Henckaerts et al. (2018)](#references) uses GAMs together with tree-based clustering, to bin continuous variables for a GLM
 
-]
+- Gradient Boosting:  [Henckaerts et al. (2020)](#references) uses GBMs for both frequency and severity modelling
 
-.pull-right[
-### Gradient boosting machine
-
-- Powerful ensemble technique from the field of ML
-
-- [Henckaerts et al. (2020)](#references) uses GBMs for both frequency and severity modelling
-
-]
-&lt;br&gt;&lt;br&gt;
-Many other options exist: GAM, decision trees, random forests, Tweedie compound Poisson-gamma models, support vector machines,...
 
 ---
 
@@ -95,7 +85,7 @@ Fully-connected feed-forward neural networks
 Combined Actuarial Neural Networks (.hi-pink[CANN]), proposed by [Scheldorfer and Wutrich (2019)](#references)
 
 .center[
-&lt;embed src="./img_f/CANN_animation.gif" width="80%"&gt;
+&lt;embed src="./img_f/CANN_animation.gif" width="70%"&gt;
 ]
 
 An .hi-pink[initial model input] is added with a skip connection to the output layer. 
@@ -106,19 +96,24 @@ An .hi-pink[initial model input] is added with a skip connection to the output l
 
 Combined Actuarial Neural Networks (.hi-pink[CANN]), proposed by [Scheldorfer and Wutrich (2019)](#references)
 
-.pull-left[
-Fixed CANN setup
-`$$f^{fixed}\left( \boldsymbol{x}_i,\hat{y}_i^{(in)}\right) = \exp\left(\ln\left( \hat{y}_i^{(in)}\right) + \hat{y}_i^{(adj)}\right)$$`
+.center[
+&lt;embed src="./img_f/CANN_animation.gif" width="70%"&gt; ]
 
-Flexible CANN setup
-`$$f^{flexible}\left( \boldsymbol{x}_i,\hat{y}_i^{(in)}\right) = \exp\left( \begin{bmatrix} w_1 &amp; w_2 \end{bmatrix}\cdot\begin{bmatrix}\ln(\hat{y}_i^{(in)}) \\ \hat{y}_i^{(adj)}\end{bmatrix} + \beta\right)$$`
+.pull-left[
+.KULbginline[Fixed CANN setup]
+]
+.pull-right[
+.KULbginline[Flexible CANN setup]
 ]
 
-.pull-right[
-&lt;br&gt;
-&lt;br&gt;
-.center[
-&lt;embed src="./img_f/CANN_animation.gif" width="100%"&gt; ]
+.font80[
+$$
+\begin{array}{ccc}
+f^{fixed}\left( \boldsymbol{x}_i,\hat{y}_i^{(in)}\right) = \exp\left(\ln\left( \hat{y}_i^{(in)}\right) + \hat{y}_i^{(adj)}\right) &amp; 
+\hspace{230px}
+f^{flexible}\left( \boldsymbol{x}_i,\hat{y}_i^{(in)}\right) = \exp\left( \begin{bmatrix} w_1 &amp; w_2 \end{bmatrix}\cdot\begin{bmatrix}\ln(\hat{y}_i^{(in)}) \\ \hat{y}_i^{(adj)}\end{bmatrix} + \beta\right)
+\end{array} 
+$$
 ]
 
 ---
