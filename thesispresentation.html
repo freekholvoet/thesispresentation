@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Neural Network-based models for Non-Life Insurance Pricing</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Freek Holvoet" />
+    <meta name="date" content="2021-05-28" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/metropolis.css" type="text/css" />
+    <link rel="stylesheet" href="css/metropolis-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-css.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+class: bottom, left, title-slide, clear
+
+background-image: url('img_f/beamer_title_KUL.png')
+background-size: contain
+
+name: titlepage
+
+# Neural Network-based models for Non-Life Insurance Pricing
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#FAFAFA' size=1px width=100%&gt;&lt;/html&gt;
+
+&lt;span style="color:#FAFAFA;font-size:18.0pt"&gt;
+Master Thesis Presentation &lt;br&gt;
+Freek Holvoet &lt;br&gt;
+28 May 2021 &lt;br&gt;
+&lt;/span&gt;
+
+&lt;span style="color:#FAFAFA;font-size:14.0pt"&gt;
+Promotor: Prof. Dr. Katrien Antonio&lt;br&gt;
+Work leader: ir. Roel Henckaerts &lt;br&gt;
+&lt;/span&gt;
+---
+
+name: introduction
+
+# Introduction
+
+### Pure risk premium calculation
+
+
+
+$$
+\pi = \mathbb{E}\left(\frac{N}{e}\right) \times \mathbb{E}\left(\frac{L}{N}\; \middle|\; N&gt;0\right) = \mathbb{E}(F)\times\mathbb{E}(S)
+$$
+
+---
+
+# Different model types
+
+.pull-left[
+### Binned GLM model
+
+- GLMs are widely used in practice and are easily interpretable
+
+- Extended by [Henckaerts et al. (2018)](#references) into a binned GLM, using GAMs together with tree-based clustering, to bin continuous variables
+
+]
+
+.pull-right[
+### Gradient boosting machine
+
+- Powerful ensemble technique from the field of ML
+
+- [Henckaerts et al. (2020)](#references) uses GBMs for both frequency and severity modelling
+
+]
+&lt;br&gt;&lt;br&gt;
+Many other options exist: GAM, decision trees, random forests, Tweedie compound Poisson-gamma models, support vector machines,...
+
+---
+
+# Neural Networks
+
+Fully-connected feed-forward neural networks
+
+.center[
+&lt;embed src="./img_f/NN_animation.gif" width="80%"&gt;
+]
+
+---
+
+# Combined Actuarial Neural Networks
+
+Combined Actuarial Neural Networks (.hi-pink[CANN]), proposed by [Scheldorfer and Wutrich (2019)](#references)
+
+.center[
+&lt;embed src="./img_f/CANN_animation.gif" width="80%"&gt;
+]
+
+An .hi-pink[initial model input] is added with a skip connection to the output layer. 
+
+---
+
+# Combined Actuarial Neural Networks
+
+Combined Actuarial Neural Networks (.hi-pink[CANN]), proposed by [Scheldorfer and Wutrich (2019)](#references)
+
+.pull-left[
+Fixed CANN setup
+`$$f^{fixed}\left( \boldsymbol{x}_i,\hat{y}_i^{(in)}\right) = \exp\left(\ln\left( \hat{y}_i^{(in)}\right) + \hat{y}_i^{(adj)}\right)$$`
+
+Flexible CANN setup
+`$$f^{flexible}\left( \boldsymbol{x}_i,\hat{y}_i^{(in)}\right) = \exp\left( \begin{bmatrix} w_1 &amp; w_2 \end{bmatrix}\cdot\begin{bmatrix}\ln(\hat{y}_i^{(in)}) \\ \hat{y}_i^{(adj)}\end{bmatrix} + \beta\right)$$`
+]
+
+.pull-right[
+&lt;br&gt;
+&lt;br&gt;
+.center[
+&lt;embed src="./img_f/CANN_animation.gif" width="100%"&gt; ]
+]
+
+---
+
+# Bias regularization
+
+### Balance property
+
+In a model `\(f(\boldsymbol{x})\)` with perfect balance
+
+$$ \sum_i f(\boldsymbol{x}_i) = \sum_i y_i. $$
+.KULbginline[Important in insurance:] premiums are defined on portfolio level
+
+### GLM bias regularization
+
+[Wutrich (2020)](#references) proposes the use of GLM bias regularization to restore balance in neural network models.
+
+- GLM with natural link possesses the balance property
+
+---
+
+name: outofsample
+
+# Out-of-sample performance
+### Neural network results
+
+.center[
+&lt;img src="./img_f/OOS_NN_freq_vs_sev.png" width="80%" height="50%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Out-of-sample performance
+### CANN model results
+
+.center[
+&lt;img src="./img_f/OOS_CANN_freq_vs_sev.png" width="80%" height="50%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+name: brresults
+
+# Out-of-sample performance
+### Effect of bias regularization
+
+.center[
+&lt;img src="./img_f/BReffect_Freq_CANNs.png" width="80%" height="50%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+name: interpretation
+
+# Model interpretational tools
+
+.pull-left[
+### Variable importance plot
+
+- Permutate each variable `\(\ell\)` 
+
+- Calculate the difference in prediction between the unpermutated, and the permutated sample data set 
+
+&lt;br&gt;
+
+`$$\text{VIP}_{\ell} = \frac{1}{n}\sum_{i=1}^{n}\left( f_{\text{model}}(\boldsymbol{x}_i) - f_{\text{model}}\left(\boldsymbol{x}_i^{\text{perm},\ell}\right) \right)$$`
+
+]
+
+.pull-right[
+### Partial dependency plot
+
+- Fix the value of variable `\(\ell\)` 
+
+- Iterate over all possible values 
+
+- Look at the average prediction in function of the variables value
+
+`$$\text{PDP}(x_{\ell}) = \frac{1}{n}\sum_{i=1}^{n}f_{\text{model}}(\boldsymbol{x}_{\ell},\boldsymbol{x}^*_i)$$`
+
+]
+
+.footnote[Reference: [Molnar (2019)](#references)]
+
+---
+
+# Model interpretational tools
+
+### Variable importance plot
+
+A permutational approach to asses the importance of each variable in the claim frequency model.
+
+.center[
+&lt;img src="./img_f/VIP_Freq.png" width="80%" height="50%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Model interpretational tools
+
+### Partial dependency plot: Policyholder age
+
+Effect of the policyholder age on the predicted claim severity.
+
+.center[
+&lt;img src="./img_f/PDP_Freq_ageph.png" width="80%" height="50%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Model interpretational tools
+
+### Partial dependency plot: Postal code
+
+Effect of the postal code on the predicted number of claims.
+
+.center[
+&lt;img src="./img_f/PDP_NC_spatial_comparison.png" width="80%" height="50%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+name: references
+# References
+
+.font90[
+Ian Goodfellow, Yoshua Bengio, and Aaron Courville. &lt;i&gt;Deep Learning&lt;/i&gt;. MIT Press, 2016.]
+
+.font90[
+Roel Henckaerts, Katrien Antonio, Maxime Clijsters, and Roel Verbelen. A data driven binning strategy
+for the construction of insurance tariff classes. &lt;i&gt;Scandinavian Actuarial Journal&lt;/i&gt;, 2018(8):681–705, 2018.]
+
+.font90[
+Roel Henckaerts, Marie Pier Cote, Katrien Antonio, and Roel Verbelen. Boosting Insights in Insurance
+Tariff Plans with Tree-Based Machine Learning Methods. North American Actuarial Journal, pages 1–31, 2020.]
+
+.font90[
+Christoph Molnar. &lt;i&gt;Interpretable Machine Learning&lt;/i&gt;. christophm.github.io/interpretable-ml-book, 2019.]
+
+.font90[
+Jurg Schelldorfer and Mario V. Wuthrich. Nesting Classical Actuarial Models into Neural Networks.
+&lt;i&gt;SSRN Electronic Journal&lt;/i&gt;, pages 1–27, 2019.]
+
+.font90[
+Mario V. W¨uthrich. Bias regularization in neural network models for general insurance pricing. &lt;i&gt;European
+Actuarial Journal&lt;/i&gt;, 10(1):179–202, 2020.]
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+Slides created with the R package &lt;img src="img/xaringan.png" class="title-hex"&gt; [xaringan](https://github.com/yihui/xaringan).&lt;br&gt;
+Presentation template from <svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#116E8A;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> https://github.com/katrienantonio/hands-on-machine-learning-R-module-1
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLanguage": "R",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"highlightSpans": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
