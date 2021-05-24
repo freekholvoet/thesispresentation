@@ -75,8 +75,12 @@ Many options exist: GLM, GAM, decision trees, ensemble methods, Tweedie compound
 Fully-connected feed-forward neural networks
 
 .center[
-&lt;embed src="./img_f/NN_animation.gif" width="80%"&gt;
+&lt;embed src="./img_f/NN_animation.gif" width="60%"&gt;
 ]
+
+Each layer a weighted combination of the previous layer, with an activation function `\(\sigma\)`
+
+`$$\boldsymbol{\text{layer}_i} = \sigma(\mathbf{W}\,\boldsymbol{\text{layer}_{i-1}} + \boldsymbol{\beta})$$`
 
 ---
 
@@ -88,7 +92,7 @@ Combined Actuarial Neural Networks (.hi-pink[CANN]), proposed by [Scheldorfer an
 &lt;embed src="./img_f/CANN_animation.gif" width="70%"&gt;
 ]
 
-An .hi-pink[initial model input] is added with a skip connection to the output layer. 
+An .hi-pink[initial model] is added with a skip connection to the output layer. The neural network part is called the .hi-pink[adjustment model]
 
 ---
 
@@ -133,6 +137,8 @@ $$ \sum_i f(\boldsymbol{x}_i) = \sum_i y_i. $$
 
 - GLM with natural link possesses the balance property
 
+- Using the last hidden layer of a neural network as input in a GLM to restore balance in the neural network
+
 ---
 
 name: outofsample
@@ -161,7 +167,7 @@ name: brresults
 ### Effect of bias regularization
 
 .center[
-&lt;img src="./img_f/BReffect_Freq_CANNs.png" width="80%" height="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="./img_f/BReffect_Freq_CANNs.png" width="60%" height="50%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
