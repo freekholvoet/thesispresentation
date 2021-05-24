@@ -141,6 +141,51 @@ $$ \sum_i f(\boldsymbol{x}_i) = \sum_i y_i. $$
 
 ---
 
+# Model setup
+
+.pull-left[
+### Different models are compared
+
+- Regular neural networks
+
+  - One-hot encoding
+  
+  - Embedding layers
+  
+  - Exposure as offset versus input variable
+  
+- CANN models
+
+  - Binned GLM input, fixed and flexible
+  
+  - GBM input, fixed and flexible
+
+- All models with and without GLM bias regularization
+
+]
+
+.pull-right[
+### Training the models
+
+- Loss functions
+
+  - Poisson deviance for frequency model
+  
+  - Gamma deviance for severity model
+  
+- Tuning strategy
+
+  - `\(K\)`-times `\(K-1\)`-fold cross-validation
+  
+  - Sequential tuning
+  
+- `\(K\)` out-of-sample performances with random early stopping set
+
+]
+
+
+---
+
 name: outofsample
 
 # Out-of-sample performance
