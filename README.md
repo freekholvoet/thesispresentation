@@ -13,4 +13,5 @@ The animations of neural networks are made in
 - Adobe Photoshop for converting to gif format
 
 Presentation made with Xarigan package in R 
+
 Template taken from https://github.com/katrienantonio/hands-on-machine-learning-R-module-1
