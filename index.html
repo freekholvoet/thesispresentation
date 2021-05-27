@@ -46,11 +46,11 @@ name: introduction
 
 # Introduction
 
-### Pure risk premium calculation
+### Pure premium calculation
 
 - Technical premiums defined by the expected loss
 
-- In P&amp;C often the frequency-severity approach is used
+- Popular frequency-severity approach in P&amp;C pricing:
 
 
 $$
@@ -60,10 +60,10 @@ $$
 
 ### Predictive models
 
-Many options exist: GLM, GAM, decision trees, ensemble methods, Tweedie compound Poisson-gamma models, neural networks, support vector machines,...
+Many options exist, for example: GLM, GAM, decision trees, ensemble methods, Tweedie compound Poisson-gamma models, neural networks, support vector machines.
 
 
-- Binned GLM:  [Henckaerts et al. (2018)](#references) uses GAMs together with tree-based clustering, to bin continuous variables for a GLM
+- Binned GLM:  [Henckaerts et al. (2018)](#references) uses GAMs together with tree-based clustering, to bin continuous variables for use in a GLM
 
 - Gradient Boosting:  [Henckaerts et al. (2020)](#references) uses GBMs for both frequency and severity modelling
 
@@ -78,7 +78,7 @@ Fully-connected feed-forward neural networks
 &lt;embed src="./img_f/NN_animation.gif" width="60%"&gt;
 ]
 
-Each layer a weighted combination of the previous layer, with an activation function `\(\sigma\)`
+Each layer outputs a weighted combination of the previous layer, with an activation function `\(\sigma\)`:
 
 `$$\boldsymbol{\text{layer}_i} = \sigma(\mathbf{W}\,\boldsymbol{\text{layer}_{i-1}} + \boldsymbol{\beta})$$`
 
@@ -92,7 +92,7 @@ Combined Actuarial Neural Networks (.hi-pink[CANN]), proposed by [Scheldorfer an
 &lt;embed src="./img_f/CANN_animation.gif" width="70%"&gt;
 ]
 
-An .hi-pink[initial model] is added with a skip connection to the output layer. The neural network part is called the .hi-pink[adjustment model]
+An .hi-pink[initial model] is added with a skip connection to the output layer. The neural network part is called the .hi-pink[adjustment model].
 
 ---
 
@@ -126,7 +126,7 @@ $$
 
 ### Balance property
 
-In a model `\(f(\boldsymbol{x})\)` with perfect balance
+In a model `\(f(\boldsymbol{x})\)` with perfect balance:
 
 $$ \sum_i f(\boldsymbol{x}_i) = \sum_i y_i. $$
 .KULbginline[Important in insurance:] premiums are defined on portfolio level
@@ -135,7 +135,7 @@ $$ \sum_i f(\boldsymbol{x}_i) = \sum_i y_i. $$
 
 [Wutrich (2020)](#references) proposes the use of GLM bias regularization to restore balance in neural network models.
 
-- GLM with natural link possesses the balance property
+- GLM with canonical link possesses the balance property
 
 - Using the last hidden layer of a neural network as input in a GLM to restore balance in the neural network
 
@@ -226,7 +226,7 @@ name: interpretation
 
 - Permutate each variable `\(\ell\)` 
 
-- Calculate the difference in prediction between the unpermutated, and the permutated sample data set 
+- Calculate the difference in prediction between the unpermutated and the permutated sample data set 
 
 &lt;br&gt;
 
@@ -235,13 +235,13 @@ name: interpretation
 ]
 
 .pull-right[
-### Partial dependency plot
+### Partial dependence plot
 
 - Fix the value of variable `\(\ell\)` 
 
-- Iterate over all possible values 
+- Look at the average prediction
 
-- Look at the average prediction in function of the variables value
+- Calculate the average predictions over the full range of possible values
 
 `$$\text{PDP}(x_{\ell}) = \frac{1}{n}\sum_{i=1}^{n}f_{\text{model}}(\boldsymbol{x}_{\ell},\boldsymbol{x}^*_i)$$`
 
@@ -265,7 +265,7 @@ A permutational approach to asses the importance of each variable in the claim f
 
 # Model interpretational tools
 
-### Partial dependency plot: Policyholder age
+### Partial dependence plot: Policyholder age
 
 Effect of the policyholder age on the predicted claim severity.
 
@@ -277,7 +277,7 @@ Effect of the policyholder age on the predicted claim severity.
 
 # Model interpretational tools
 
-### Partial dependency plot: Postal code
+### Partial dependence plot: Postal code
 
 Effect of the postal code on the predicted number of claims.
 
@@ -289,9 +289,6 @@ Effect of the postal code on the predicted number of claims.
 
 name: references
 # References
-
-.font90[
-Ian Goodfellow, Yoshua Bengio, and Aaron Courville. &lt;i&gt;Deep Learning&lt;/i&gt;. MIT Press, 2016.]
 
 .font90[
 Roel Henckaerts, Katrien Antonio, Maxime Clijsters, and Roel Verbelen. A data driven binning strategy
@@ -309,7 +306,7 @@ Jurg Schelldorfer and Mario V. Wuthrich. Nesting Classical Actuarial Models into
 &lt;i&gt;SSRN Electronic Journal&lt;/i&gt;, pages 1–27, 2019.]
 
 .font90[
-Mario V. W¨uthrich. Bias regularization in neural network models for general insurance pricing. &lt;i&gt;European
+Mario V. Wuthrich. Bias regularization in neural network models for general insurance pricing. &lt;i&gt;European
 Actuarial Journal&lt;/i&gt;, 10(1):179–202, 2020.]
 
 &lt;br&gt;
